@@ -643,12 +643,37 @@ java -version
 
 ---
 
+## 🔗 追加デモ: AWS Athena からのアクセス
+
+### AWS Glue Catalog Federation
+
+Snowflake Horizon Catalog を AWS Glue Data Catalog とフェデレートし、Amazon Athena から直接クエリを実行するデモも用意しています。
+
+```
+athena-federation-demo/
+├── README.md              # セットアップ手順
+├── setup-iam.sh           # IAM ロール作成
+├── setup-federation.sh    # Federation セットアップ
+├── terraform/             # Terraform による自動化
+└── queries/               # サンプル Athena クエリ
+```
+
+**主な機能:**
+- AWS Lake Formation による細粒度アクセス制御
+- データ移動なしでの Snowflake データへのアクセス
+- 既存の AWS 分析ワークロードとの統合
+
+👉 **[Athena Federation Demo](./athena-federation-demo/README.md)**
+
+---
+
 ## 📚 参考リンク
 
 - [Snowflake Horizon REST Catalog API ドキュメント](https://docs.snowflake.com/en/user-guide/tables-iceberg-rest-api)
 - [Apache Iceberg REST Catalog Spec](https://iceberg.apache.org/concepts/catalog/#rest-catalog)
 - [Snowflake Managed Iceberg Tables](https://docs.snowflake.com/en/user-guide/tables-iceberg)
 - [Apache Spark Iceberg Integration](https://iceberg.apache.org/docs/latest/spark-getting-started/)
+- [AWS Blog: Access Snowflake Horizon Catalog using Glue Catalog Federation](https://aws.amazon.com/blogs/big-data/access-snowflake-horizon-catalog-data-using-catalog-federation-in-the-aws-glue-data-catalog/)
 
 ---
 

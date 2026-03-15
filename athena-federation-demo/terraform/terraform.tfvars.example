@@ -1,0 +1,12 @@
+# Example Terraform variables file
+# Copy this to terraform.tfvars and update with your values
+
+aws_region         = "ap-northeast-1"
+snowflake_account  = "YOUR_ACCOUNT.YOUR_REGION.aws"  # e.g., zx48016.ap-northeast-1.aws
+snowflake_database = "ICEBERG_DEMO_DB"
+s3_bucket          = "YOUR_S3_BUCKET"
+s3_prefix          = "iceberg-demo"
+oauth_token        = "YOUR_OAUTH_TOKEN"  # Generate via PAT token exchange
+secret_name        = "horizon-catalog-token"
+connection_name    = "snowflake-horizon-connection"
+catalog_name       = "snowflake_iceberg_catalog"
