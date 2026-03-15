@@ -265,7 +265,7 @@ SNOWFLAKE_ACCOUNT=<account_locator>.<region>.<cloud>
 PAT_TOKEN=<your-pat-token>
 ```
 
-### Step 9: ノートブックの実行
+### Step 9: ノートブックを開く
 
 ```bash
 # Jupyter Lab を起動
@@ -273,6 +273,128 @@ jupyter lab
 
 # または VS Code でノートブックを開く
 code spark_iceberg_demo.ipynb
+```
+
+---
+
+## ▶️ デモの実行方法
+
+ノートブック `spark_iceberg_demo.ipynb` を開いたら、以下の順序でセルを実行します。
+
+### 実行手順
+
+#### 1. 環境設定（セル 1-2）
+```
+[セル 1] Java 環境の設定
+  → JAVA_HOME を conda 環境の Java 11 に設定
+  → 出力: "openjdk version 11.x.x" を確認
+```
+
+#### 2. Snowflake 接続設定（セル 3-4）
+```
+[セル 2] 接続パラメータの設定
+  → SNOWFLAKE_ACCOUNT: あなたのアカウントロケーター（例: zx48016.ap-northeast-1.aws）
+  → PAT_TOKEN: Step 5 で生成した PAT トークン
+  → 出力: 設定内容の確認表示
+```
+
+> ⚠️ **重要**: `SNOWFLAKE_ACCOUNT` と `PAT_TOKEN` を必ず自分の値に変更してください
+
+#### 3. OAuth トークン取得（セル 5-6）
+```
+[セル 3] PAT → OAuth トークン交換
+  → Horizon REST API の認証トークンを取得
+  → 出力: "✅ OAuth トークンを取得しました"
+```
+
+#### 4. Spark Session 作成（セル 7-8）
+```
+[セル 4] Spark Session の構築
+  → Iceberg REST Catalog として Horizon API を設定
+  → 初回実行時は JAR ダウンロードのため数分かかる場合あり
+  → 出力: "✅ Spark Session を作成しました"
+```
+
+#### 5. カタログ探索（セル 9-14）
+```
+[セル 5] SHOW NAMESPACES
+  → 利用可能なスキーマ一覧を表示
+  → 出力: PUBLIC スキーマが表示される
+
+[セル 6] SHOW TABLES
+  → PUBLIC スキーマ内のテーブル一覧
+  → 出力: SALES_DATA テーブルが表示される
+
+[セル 7] DESCRIBE TABLE
+  → テーブルのカラム定義を表示
+```
+
+#### 6. データ読み取り（セル 15-20）
+```
+[セル 8] SELECT * クエリ
+  → Iceberg テーブルの全データを取得
+  → 🎯 ここで Spark が S3 から直接データを読み取る！
+
+[セル 9] 集計クエリ
+  → 地域別売上サマリーを計算
+  → Spark のローカルエンジンで集計処理
+
+[セル 10] DataFrame API
+  → プログラマティックなデータ操作
+  → レコード数、スキーマ、Top 3 を表示
+```
+
+#### 7. クリーンアップ（セル 21-22）
+```
+[セル 11] Spark Session 停止
+  → リソースを解放
+  → 出力: "✅ Spark Session を停止しました"
+```
+
+### クイック実行（全セル一括実行）
+
+VS Code または Jupyter Lab で全セルを一括実行することもできます：
+
+- **VS Code**: `Ctrl+Alt+Enter` (Windows) / `Cmd+Alt+Enter` (Mac)
+- **Jupyter Lab**: メニュー → Run → Run All Cells
+
+> ⚠️ 一括実行前に、セル 2 の `SNOWFLAKE_ACCOUNT` と `PAT_TOKEN` を必ず設定してください
+
+### 期待される出力例
+
+```
+📁 ICEBERG_DEMO_DB 内の Namespace 一覧:
++---------+
+|namespace|
++---------+
+|PUBLIC   |
++---------+
+
+📋 ICEBERG_DEMO_DB.PUBLIC 内のテーブル一覧:
++---------+----------+-----------+
+|namespace|tableName |type       |
++---------+----------+-----------+
+|PUBLIC   |SALES_DATA|ICEBERG    |
++---------+----------+-----------+
+
+📊 ICEBERG_DEMO_DB.PUBLIC.SALES_DATA の全データ:
++-------+------------------------+--------+----------+---------+
+|SALE_ID|PRODUCT_NAME            |AMOUNT  |SALE_DATE |REGION   |
++-------+------------------------+--------+----------+---------+
+|1      |ノートPC                 |128000.00|2024-01-15|Tokyo    |
+|2      |モニター                 |45000.50|2024-01-16|Osaka    |
+|3      |キーボード               |12500.00|2024-01-17|Tokyo    |
+...
++-------+------------------------+--------+----------+---------+
+
+📈 地域別売上サマリー:
++------+-----------+-----------+--------+
+|REGION|order_count|total_sales|avg_sale|
++------+-----------+-----------+--------+
+|Tokyo |4          |184600.00  |46150.00|
+|Osaka |2          |48200.50   |24100.25|
+...
++------+-----------+-----------+--------+
 ```
 
 ---
