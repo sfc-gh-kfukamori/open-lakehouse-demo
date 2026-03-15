@@ -1,0 +1,10 @@
+name: spark-iceberg-demo
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pyspark=3.5.0
+  - openjdk=11
+  - pip
+  - pip:
+    - python-dotenv
